@@ -1,13 +1,26 @@
-#.\xPricer.ps1 -Purge no -AzureRmResourceGroup tontonompsg2 -AzureRmStorageAccount tontonompsg2 -AzureRmBatchAccount tontonompsg2 -AzureStorageContainer tontonompsg2 -NbrVM 4 -PoolName tontonompsg2
+#.\xPricer.ps1 -Purge no -AzureRmResourceGroup xpricerresourcegroup -AzureRmStorageAccount xpricerstorageaccount -AzureRmBatchAccount xpricerbatchaccount -AzureStorageContainer xpricerstoragecontainer -NbrVM 4 -PoolName xpricerpool
 
 param(
-    [String]$Purge,
-    [String]$AzureRmResourceGroup,
-    [String]$AzureRmStorageAccount,
-    [String]$AzureRmBatchAccount,
-    [String]$AzureStorageContainer,    
-    [int]$NbrVM,
-    [String]$PoolName)
+    [Parameter(Mandatory=$false)]
+    [String]$Purge = no,
+    
+    [Parameter(Mandatory=$true)]
+    [String]$AzureRmResourceGroup = xpricerresourcegroup,
+    
+    [Parameter(Mandatory=$true)]
+    [String]$AzureRmStorageAccount = xpricerstorageaccount,
+    
+    [Parameter(Mandatory=$true)]
+    [String]$AzureRmBatchAccount = xpricerbatchaccount,
+    
+    [Parameter(Mandatory=$true)]
+    [String]$AzureStorageContainer = xpricerstoragecontainer,    
+    
+    [Parameter(Mandatory=$true)]
+    [int]$NbrVM = 4,
+    
+    [Parameter(Mandatory=$true)]
+    [String]$PoolName = xpricerpool )
 
 Login-AzureRmAccount 
    
