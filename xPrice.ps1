@@ -1,10 +1,12 @@
-#.\xPricer.ps1 -Purge no -AzureRmResourceGroup tontonompsg -AzureRmStorageAccount tontonompsg -AzureRmBatchAccount tontonompsg -PoolName tontonompsg
+#.\xPricer.ps1 -Purge no -AzureRmResourceGroup tontonompsg2 -AzureRmStorageAccount tontonompsg2 -AzureRmBatchAccount tontonompsg2 -AzureStorageContainer tontonompsg2 -NbrVM 4 -PoolName tontonompsg2
 
 param(
     [String]$Purge,
     [String]$AzureRmResourceGroup,
     [String]$AzureRmStorageAccount,
     [String]$AzureRmBatchAccount,
+    [String]$AzureStorageContainer,    
+    [int]$NbrVM,
     [String]$PoolName)
 
 Login-AzureRmAccount 
@@ -34,10 +36,11 @@ $global:ReturnsxPricerKeys.Add("$SecondaryAccountKey")
 
 $context = Get-AzureRmBatchAccountKeys -AccountName "$AzureRmBatchAccount"
 $configuration = New-Object -TypeName "Microsoft.Azure.Commands.Batch.Models.PSCloudServiceConfiguration" -ArgumentList @(4,"*")
-New-AzureBatchPool -Id "$PoolName" -VirtualMachineSize "Small" -CloudServiceConfiguration $configuration -AutoScaleFormula '$TargetDedicated=4;' -BatchContext $context
+New-AzureBatchPool -Id "$PoolName" -VirtualMachineSize "Small" -CloudServiceConfiguration $configuration -AutoScaleFormula '$TargetDedicated=' + "$NbrVM" + ';' -BatchContext $context
+New-AzureStorageContainer -Name $AzureStorageContainer -Permission Off -Context $context
 Write-Host "Pool $PoolName has been created ..."
 
-$ServiceBatchURL = Get-AzureRmBatchAccount –AccountName "ompsg2"
+$ServiceBatchURL = Get-AzureRmBatchAccount –AccountName "$AzureRmBatchAccount"
 $BatchURL = $ServiceBatchURL.TaskTenantUrl
 
 $json = @"
