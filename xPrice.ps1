@@ -1,45 +1,23 @@
 #.\xPricer.ps1 -Purge no -AzureRmResourceGroup xpricerresourcegroup -AzureRmStorageAccount xpricerstorageaccount -AzureRmBatchAccount xpricerbatchaccount -AzureStorageContainer xpricerstoragecontainer -NbrVM 4 -PoolName xpricerpool
 
-param(
-    [Parameter(Mandatory=$false)]
-    [String]$Purge = no,
-    
-    [Parameter(Mandatory=$true)]
-    [String]$AzureRmResourceGroup = xpricerresourcegroup,
-    
-    [Parameter(Mandatory=$true)]
-    [String]$AzureRmStorageAccount = xpricerstorageaccount,
-    
-    [Parameter(Mandatory=$true)]
-    [String]$AzureRmBatchAccount = xpricerbatchaccount,
-    
-    [Parameter(Mandatory=$true)]
-    [String]$AzureStorageContainer = xpricerstoragecontainer,    
-    
-    [Parameter(Mandatory=$true)]
-    [int]$NbrVM = 4,
-    
-    [Parameter(Mandatory=$true)]
-    [String]$PoolName = xpricerpool )
+param
+    (
+          [Parameter(Mandatory=$false)]  [String]$Purge ="no", 
+          [Parameter(Mandatory=$false)]  [String]$AzureRmResourceGroup = "xpricerresourcegroup",
+          [Parameter(Mandatory=$false)]  [String]$AzureRmStorageAccount = "xpricerstorageaccount",
+          [Parameter(Mandatory=$false)]  [String]$AzureRmBatchAccount = "xpricerbatchaccount",
+          [Parameter(mandatory=$false)]  [String]$AzureStorageContainer = "xpricerstoragecontainer",
+          [Parameter(mandatory=$false)]  [int]$NbrVM ="4",
+          [Parameter(mandatory=$false)]  [String]$PoolName="xpricerpool"
+      )
 
 # Get-Module PowerShellGet -list | Select-Object Name,Version,Path
 # Install-Module AzureRM -Force
-# Login-AzureRmAccount
+
+Login-AzureRmAccount
+
 # Warning !!! All ressources will be delete
-# Get-AzureRmresourceGroup | Select ResourceGroupName | Remove-AzureRmResourceGroup -Force 
-
-# Setup – First login manually per previous section
-# Add-AzureRmAccount
-
-# Now save your context locally (Force will overwrite if there)
-# $path = "$env:USERPROFILE\ProfileContext.ctx"
-# Save-AzureRmContext -Path $path -Force
-
-# Once that’s done, from then on you can use the Import-AzureRmContext to automate the login.
-
-# Once the above two steps are done, you can simply import
-$path = "$env:USERPROFILE\ProfileContext.ctx"
-Import-AzureRmContext -Path $path
+Get-AzureRmresourceGroup | Select ResourceGroupName | Remove-AzureRmResourceGroup -Force 
     
 $global:ReturnsxPricerKeys = [System.Collections.ArrayList]@("")
 $template_json_file = "c:\template.json"
@@ -71,8 +49,11 @@ $BatchURL = $ServiceBatchURL.TaskTenantUrl
 # create pool and retire his url
 $context = Get-AzureRmBatchAccountKeys -AccountName "$AzureRmBatchAccount"
 $configuration = New-Object -TypeName "Microsoft.Azure.Commands.Batch.Models.PSCloudServiceConfiguration" -ArgumentList @(4,"*")
-New-AzureBatchPool -Id "$PoolName" -VirtualMachineSize "Small" -CloudServiceConfiguration $configuration -AutoScaleFormula '$TargetDedicated=' + "$NbrVM" + ';' -BatchContext $context
-New-AzureStorageContainer -Name $AzureStorageContainer -Permission Off -Context $context
+New-AzureBatchPool -Id "$PoolName" -VirtualMachineSize "Small" -CloudServiceConfiguration $configuration -AutoScaleFormula '$TargetDedicated=4;' -BatchContext $context
+
+$AzureStorageContainerContext = New-AzureStorageContext -StorageAccountName "$AzureRmStorageAccount" -StorageAccountKey $ReturnsxPricerKeys[1] -Protocol https
+
+New-AzureStorageContainer -Name "$AzureStorageContainer" -Context $AzureStorageContainerContext
 Write-Host "Pool $PoolName has been created ..."
 
 # write all these inforamtion to a json file
