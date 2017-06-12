@@ -18,7 +18,6 @@ if (($Purge -eq "force")) {
 Remove-AzureRmResourceGroup –Name "$AzureRmResourceGroup" -Force         
 }     
 
-
 #create a resource Group
 New-AzureRmResourceGroup –Name "$AzureRmResourceGroup" –Location “West Europe” 
 
@@ -51,7 +50,6 @@ $json = @"
 
 $jobj = ConvertFrom-Json -InputObject $json    
     
-
 $jobj | add-member "AzureRmStorageAccount" "$AzureRmStorageAccount" -MemberType NoteProperty
 $jobj | add-member "PrivateKey" "$Key" -MemberType NoteProperty
 $jobj | add-member "AzureRmBatchAccount" "$AzureRmBatchAccount" -MemberType NoteProperty
