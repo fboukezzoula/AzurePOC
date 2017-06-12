@@ -28,8 +28,19 @@ param(
 # Warning !!! All ressources will be delete
 # Get-AzureRmresourceGroup | Select ResourceGroupName | Remove-AzureRmResourceGroup -Force 
 
-Login-AzureRmAccount 
-   
+# Setup – First login manually per previous section
+# Add-AzureRmAccount
+
+# Now save your context locally (Force will overwrite if there)
+# $path = "$env:USERPROFILE\ProfileContext.ctx"
+# Save-AzureRmContext -Path $path -Force
+
+# Once that’s done, from then on you can use the Import-AzureRmContext to automate the login.
+
+# Once the above two steps are done, you can simply import
+$path = "$env:USERPROFILE\ProfileContext.ctx"
+Import-AzureRmContext -Path $path
+    
 $global:ReturnsxPricerKeys = [System.Collections.ArrayList]@("")
 $template_json_file = "c:\template.json"
        
