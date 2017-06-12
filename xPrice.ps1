@@ -31,30 +31,34 @@ if (($Purge -eq "force")) {
 Remove-AzureRmResourceGroup –Name "$AzureRmResourceGroup" -Force         
 }     
 
-#create a resource Group
+# create a resource Group
 New-AzureRmResourceGroup –Name "$AzureRmResourceGroup" –Location “West Europe” 
 
-#create storage account
+# create storage account
 New-AzureRmStorageAccount –ResourceGroup "$AzureRmResourceGroup" –StorageAccountName "$AzureRmStorageAccount" –Location "West Europe" –Type "Standard_LRS" 
 
-#create batch service
+# create batch service
 New-AzureRmBatchAccount –AccountName "$AzureRmBatchAccount" –Location "Central US" –ResourceGroupName "$AzureRmResourceGroup"
 
+# keys taken from the new batch account created
 $Account = Get-AzureRmBatchAccountKeys –AccountName "$AzureRmBatchAccount"
 $PrimaryAccountKey = $Account.PrimaryAccountKey
 $SecondaryAccountKey = $Account.SecondaryAccountKey 
 $global:ReturnsxPricerKeys.Add("$PrimaryAccountKey")
 $global:ReturnsxPricerKeys.Add("$SecondaryAccountKey")
 
+# variable for the service batch address URL
+$ServiceBatchURL = Get-AzureRmBatchAccount –AccountName "$AzureRmBatchAccount"
+$BatchURL = $ServiceBatchURL.TaskTenantUrl
+
+# create pool and retire his url
 $context = Get-AzureRmBatchAccountKeys -AccountName "$AzureRmBatchAccount"
 $configuration = New-Object -TypeName "Microsoft.Azure.Commands.Batch.Models.PSCloudServiceConfiguration" -ArgumentList @(4,"*")
 New-AzureBatchPool -Id "$PoolName" -VirtualMachineSize "Small" -CloudServiceConfiguration $configuration -AutoScaleFormula '$TargetDedicated=' + "$NbrVM" + ';' -BatchContext $context
 New-AzureStorageContainer -Name $AzureStorageContainer -Permission Off -Context $context
 Write-Host "Pool $PoolName has been created ..."
 
-$ServiceBatchURL = Get-AzureRmBatchAccount –AccountName "$AzureRmBatchAccount"
-$BatchURL = $ServiceBatchURL.TaskTenantUrl
-
+# write all these inforamtion to a json file
 $json = @"
 {
    
