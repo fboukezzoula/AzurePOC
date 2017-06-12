@@ -57,6 +57,7 @@ $jobj | add-member "PrivateKey" "$Key" -MemberType NoteProperty
 $jobj | add-member "AzureRmBatchAccount" "$AzureRmBatchAccount" -MemberType NoteProperty
 $jobj | add-member "ServiceBatchURL" "$BatchURL" -MemberType NoteProperty
 $jobj | add-member "PoolName" "$PoolName" -MemberType NoteProperty
+$jobj | add-member "AzureStorageContainer" "$AzureStorageContainer" -MemberType NoteProperty
    
 ConvertTo-Json $jobj | Out-File $template_json_file
 (Get-Content -path "$template_json_file" -Encoding Unicode) | Set-Content -Encoding "Default" -Path "$template_json_file"
