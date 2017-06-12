@@ -22,6 +22,12 @@ param(
     [Parameter(Mandatory=$true)]
     [String]$PoolName = xpricerpool )
 
+# Get-Module PowerShellGet -list | Select-Object Name,Version,Path
+# Install-Module AzureRM -Force
+# Login-AzureRmAccount
+# Warning !!! All ressources will be delete
+# Get-AzureRmresourceGroup | Select ResourceGroupName | Remove-AzureRmResourceGroup -Force 
+
 Login-AzureRmAccount 
    
 $global:ReturnsxPricerKeys = [System.Collections.ArrayList]@("")
