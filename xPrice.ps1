@@ -102,22 +102,22 @@ $settings = @"
       <Value Profile="(Default)">$BatchURL</Value>
     </Setting>
     <Setting Name="BatchAccountName" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />$AzureRmBatchAccount</Value>
+      <Value Profile="(Default)">$AzureRmBatchAccount</Value>
     </Setting>
     <Setting Name="BatchAccountKey" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />$BatchAccountKey</Value>
+      <Value Profile="(Default)">$BatchAccountKey</Value>
     </Setting>
     <Setting Name="StorageServiceUrl" Type="System.String" Scope="User">
       <Value Profile="(Default)">core.windows.net</Value>
     </Setting>
     <Setting Name="StorageAccountName" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />$AzureRmStorageAccount</Value>
+      <Value Profile="(Default)">$AzureRmStorageAccount</Value>
     </Setting>
     <Setting Name="StorageAccountKey" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />$AccountStorageKey</Value>
+      <Value Profile="(Default)">$AccountStorageKey</Value>
     </Setting>
     <Setting Name="BlobContainer" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />$AzureStorageContainer</Value>
+      <Value Profile="(Default)">$AzureStorageContainer</Value>
     </Setting>
     <Setting Name="ApplicationPackageName" Type="System.String" Scope="User">
       <Value Profile="(Default)">xpricer</Value>
