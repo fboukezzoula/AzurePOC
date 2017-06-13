@@ -51,7 +51,7 @@ $context = Get-AzureRmBatchAccountKeys -AccountName "$AzureRmBatchAccount"
 $configuration = New-Object -TypeName "Microsoft.Azure.Commands.Batch.Models.PSCloudServiceConfiguration" -ArgumentList @(4,"*")
 New-AzureBatchPool -Id "$PoolName" -VirtualMachineSize "Small" -CloudServiceConfiguration $configuration -AutoScaleFormula '$TargetDedicated=4;' -BatchContext $context
 
-$AzureStorageContainerContext = New-AzureStorageContext -StorageAccountName "$AzureRmStorageAccount" -StorageAccountKey $ReturnsxPricerKeys[1] -Protocol https
+$AzureStorageContainerContext = New-AzureStorageContext -StorageAccountName "$AzureRmStorageAccount" -StorageAccountKey $ReturnsxPricerKeys[1] 
 
 New-AzureStorageContainer -Name "$AzureStorageContainer" -Context $AzureStorageContainerContext
 Write-Host "Pool $PoolName has been created ..."
