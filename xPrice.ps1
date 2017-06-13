@@ -11,7 +11,10 @@ param
           [Parameter(mandatory=$false)]  [String]$template_json_file="c:\template.json",
           [Parameter(Mandatory=$false)]  [String]$Upload ="yes",
           [Parameter(mandatory=$false)]  [String]$FakeMarketData="C:\Azure\FakeMarketData",
-          [Parameter(mandatory=$false)]  [String]$settings_file="c:\Settings.settings"
+          [Parameter(mandatory=$false)]  [String]$settings_file="c:\Settings.settings",
+
+          [Parameter(Mandatory=$false)]  [String]$AzureRmAppServicePlan = "finaxyspocbatchserviceplan",
+          [Parameter(Mandatory=$false)]  [String]$AzureRmWebApp = "finaxyspocbatchwebapp"
 
       )
 
@@ -32,7 +35,7 @@ if (($Purge -eq "yes") -or ($Purge -eq "YES") -or ($Purge -eq "Yes")) {
 }     
 
 # create a resource Group
-New-AzureRmResourceGroup –Name "$AzureRmResourceGroup" –Location “West Europe” 
+New-AzureRmResourceGroup –Name "$AzureRmResourceGroup" –Location "West Europe" 
 
 # create storage account
 New-AzureRmStorageAccount –ResourceGroup "$AzureRmResourceGroup" –StorageAccountName "$AzureRmStorageAccount" –Location "West Europe" –Type "Standard_LRS"
@@ -134,3 +137,12 @@ $settings = @"
 
 $settings | Out-File $settings_file
 (Get-Content -path "$settings_file" -Encoding Unicode) | Set-Content -Encoding "Default" -Path "$settings_file" 
+
+Get-AzureRmWebApp -ResourceGroupname $AzureRmResourceGroup
+
+New-AzureRmAppServicePlan -Name $AzureRmAppServicePlan -Location "West Europe" -ResourceGroupName $AzureRmResourceGroup -Tier Basic -WorkerSize Small -NumberofWorkers 2
+New-AzureRmWebApp -Name $AzureRmWebApp -AppServicePlan $AzureRmAppServicePlan -ResourceGroupName $AzureRmResourceGroup -Location "West Europe"
+Get-AzureRmWebAppPublishingProfile -ResourceGroupName $AzureRmResourceGroup -Name $AzureRmWebApp -OutputFile "C:\$AzureRmWebApp.PublishSettings"
+
+
+
