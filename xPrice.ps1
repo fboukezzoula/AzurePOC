@@ -2,13 +2,14 @@
 param
     (
           [Parameter(Mandatory=$false)]  [String]$Purge ="no", 
-          [Parameter(Mandatory=$false)]  [String]$AzureRmResourceGroup = "finaxyspocbatchrg",
-          [Parameter(Mandatory=$false)]  [String]$AzureRmStorageAccount = "finaxyspocbatchsa",
-          [Parameter(Mandatory=$false)]  [String]$AzureRmBatchAccount = "finaxyspocbatchba",
-          [Parameter(mandatory=$false)]  [String]$AzureStorageContainer = "finaxyspocbatchco",
+          [Parameter(Mandatory=$false)]  [String]$AzureRmResourceGroup = "finaxyspocbatchrg2",
+          [Parameter(Mandatory=$false)]  [String]$AzureRmStorageAccount = "finaxyspocbatchsa2",
+          [Parameter(Mandatory=$false)]  [String]$AzureRmBatchAccount = "finaxyspocbatchba2",
+          [Parameter(mandatory=$false)]  [String]$AzureStorageContainer = "finaxyspocbatchco2",
           [Parameter(mandatory=$false)]  [int]$NbrVM ="4",
-          [Parameter(mandatory=$false)]  [String]$PoolName="finaxyspocbatchpo",
+          [Parameter(mandatory=$false)]  [String]$PoolName="finaxyspocbatchpo2",
           [Parameter(mandatory=$false)]  [String]$template_json_file="c:\template.json",
+          [Parameter(Mandatory=$false)]  [String]$Upload ="yes",
           [Parameter(mandatory=$false)]  [String]$FakeMarketData="C:\Azure\FakeMarketData",
           [Parameter(mandatory=$false)]  [String]$settings_file="c:\Settings.settings"
 
@@ -68,7 +69,9 @@ $AzureStorageContainerContext
 New-AzureStorageContainer -Name $AzureStorageContainer -Context $AzureStorageContainerContext
 
 # Upload FakeMarketData files 
-ls $FakeMarketData | Set-AzureStorageBlobContent –Container $AzureStorageContainer -Context $AzureStorageContainerContext –ConcurrentTaskCount 16
+if (($Upload -eq "yes") -or ($Upload -eq "YES") -or ($Upload -eq "Yes")) {    
+    ls $FakeMarketData | Set-AzureStorageBlobContent –Container $AzureStorageContainer -Context $AzureStorageContainerContext –ConcurrentTaskCount 16       
+} 
 
 # write all these information to a json file
 $json = @"
@@ -91,7 +94,6 @@ ConvertTo-Json $jobj | Out-File $template_json_file
 
 # write all these information to a json file
 $settings = @"
-
 <?xml version='1.0' encoding='utf-8'?>
 <SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="XPricer.Scheduler" GeneratedClassName="Settings">
   <Profiles />
@@ -100,22 +102,22 @@ $settings = @"
       <Value Profile="(Default)">$BatchURL</Value>
     </Setting>
     <Setting Name="BatchAccountName" Type="System.String" Scope="User">
-      <Value Profile="(Default)">$AzureRmBatchAccount</Value>
+      <Value Profile="(Default)" />$AzureRmBatchAccount</Value>
     </Setting>
     <Setting Name="BatchAccountKey" Type="System.String" Scope="User">
-      <Value Profile="(Default)">$BatchAccountKey</Value>
+      <Value Profile="(Default)" />$BatchAccountKey</Value>
     </Setting>
     <Setting Name="StorageServiceUrl" Type="System.String" Scope="User">
       <Value Profile="(Default)">core.windows.net</Value>
     </Setting>
     <Setting Name="StorageAccountName" Type="System.String" Scope="User">
-      <Value Profile="(Default)">$AzureRmStorageAccount</Value>
+      <Value Profile="(Default)" />$AzureRmStorageAccount</Value>
     </Setting>
     <Setting Name="StorageAccountKey" Type="System.String" Scope="User">
-      <Value Profile="(Default)">$AccountStorageKey</Value>
+      <Value Profile="(Default)" />$AccountStorageKey</Value>
     </Setting>
     <Setting Name="BlobContainer" Type="System.String" Scope="User">
-      <Value Profile="(Default)">$AzureStorageContainer</Value>
+      <Value Profile="(Default)" />$AzureStorageContainer</Value>
     </Setting>
     <Setting Name="ApplicationPackageName" Type="System.String" Scope="User">
       <Value Profile="(Default)">xpricer</Value>
