@@ -2,12 +2,12 @@
 param
     (
           [Parameter(Mandatory=$false)]  [String]$Purge ="no", 
-          [Parameter(Mandatory=$false)]  [String]$AzureRmResourceGroup = "finaxys-poc-batch",
-          [Parameter(Mandatory=$false)]  [String]$AzureRmStorageAccount = "azurestorageaccount",
-          [Parameter(Mandatory=$false)]  [String]$AzureRmBatchAccount = "azurebatchaccount",
-          [Parameter(mandatory=$false)]  [String]$AzureStorageContainer = "azurestoragecontainer",
+          [Parameter(Mandatory=$false)]  [String]$AzureRmResourceGroup = "finaxyspocbatchrg",
+          [Parameter(Mandatory=$false)]  [String]$AzureRmStorageAccount = "finaxyspocbatchsa",
+          [Parameter(Mandatory=$false)]  [String]$AzureRmBatchAccount = "finaxyspocbatchba",
+          [Parameter(mandatory=$false)]  [String]$AzureStorageContainer = "finaxyspocbatchco",
           [Parameter(mandatory=$false)]  [int]$NbrVM ="4",
-          [Parameter(mandatory=$false)]  [String]$PoolName="finaxyspoolname",
+          [Parameter(mandatory=$false)]  [String]$PoolName="finaxyspocbatchpo",
           [Parameter(mandatory=$false)]  [String]$template_json_file="c:\template.json",
           [Parameter(mandatory=$false)]  [String]$FakeMarketData="C:\Azure\FakeMarketData",
           [Parameter(mandatory=$false)]  [String]$settings_file="c:\Settings.settings"
@@ -90,46 +90,43 @@ ConvertTo-Json $jobj | Out-File $template_json_file
 (Get-Content -path "$template_json_file" -Encoding Unicode) | Set-Content -Encoding "Default" -Path "$template_json_file"
 
 # write all these information to a json file
-
 $settings = @"
 {
 <?xml version='1.0' encoding='utf-8'?>
 <SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="XPricer.Scheduler" GeneratedClassName="Settings">
   <Profiles />
   <Settings>
-    <Setting Name="$BatchURL" Type="System.String" Scope="User">
-      <Value Profile="(Default)">https://(YourAccount).(region).batch.azure.com</Value>
+    <Setting Name="BatchServiceUrl" Type="System.String" Scope="User">
+      <Value Profile="(Default)">$BatchURL</Value>
     </Setting>
-    <Setting Name="$AzureRmBatchAccount" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
+    <Setting Name="BatchAccountName" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />$AzureRmBatchAccount</Value>
     </Setting>
-    <Setting Name="$BatchAccountKey" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
+    <Setting Name="BatchAccountKey" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />$BatchAccountKey</Value>
     </Setting>
     <Setting Name="StorageServiceUrl" Type="System.String" Scope="User">
       <Value Profile="(Default)">core.windows.net</Value>
     </Setting>
-    <Setting Name="$AzureRmStorageAccount" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
+    <Setting Name="StorageAccountName" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />$AzureRmStorageAccount</Value>
     </Setting>
-    <Setting Name="$AccountStorageKey" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
+    <Setting Name="StorageAccountKey" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />$AccountStorageKey</Value>
     </Setting>
-    <Setting Name="$AzureStorageContainer" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
+    <Setting Name="BlobContainer" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />$AzureStorageContainer</Value>
     </Setting>
-
-     <Setting Name="$PoolName" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
-    </Setting>
-
     <Setting Name="ApplicationPackageName" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
+      <Value Profile="(Default)">xpricer</Value>
     </Setting>
     <Setting Name="ApplicationPackageVersion" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
-       </Setting>
- 
+      <Value Profile="(Default)">1</Value>
+    </Setting>
+    <Setting Name="PoolID" Type="System.String" Scope="User">
+      <Value Profile="(Default)">$PoolName</Value>
+    </Setting>
+  </Settings>
 </SettingsFile>
 "@
 
